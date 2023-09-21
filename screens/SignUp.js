@@ -1,15 +1,34 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 
 function SignUp() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSignUp = async () => {
+        try {
+          // Stringify email and password before storing
+          const emailString = JSON.stringify(email);
+          const passwordString = JSON.stringify(password);
+    
+          await AsyncStorage.setItem('email', emailString);
+          await AsyncStorage.setItem('password', passwordString);
+    
+          console.log('Email and password stored successfully:', email, password);
+        } catch (error) {
+          console.error('Error signing up:', error);
+        }
+      };
     return ( <View style={styles.container}>
         <Text style={styles.tit}>Create new account</Text>
         <TextInput style={styles.inp} placeholder="Full Name"/>
         <TextInput style={styles.inp} placeholder="Phone Number"/>
-        <TextInput keyboardType="email-address" style={styles.inp} placeholder="Email Address"/>
-        <TextInput keyboardType="visible-password" style={styles.inp} placeholder="Password"/>
+        <TextInput keyboardType="email-address" style={styles.inp} onChangeText={(text)=>setEmail(text)} placeholder="Email Address"/>
+        <TextInput keyboardType="visible-password" style={styles.inp} onChangeText={(text) => setPassword(text)} placeholder="Password"/>
 
         <View style={styles.btn}>
-            <Button color={'red'} title="Sign Up"/>
+        <Button color={'red'} onPress={handleSignUp} title="Sign Up" />
         </View>
     </View> );
 }
